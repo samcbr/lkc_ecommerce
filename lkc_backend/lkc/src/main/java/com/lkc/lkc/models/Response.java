@@ -7,12 +7,12 @@ import java.util.HashMap;
 //github url - https://github.com/omniti-labs/jsend
 public class Response {
     private String status;
-    private HashMap<String,Object> data;
+    private Object data;
 
     public Response() {
     }
 
-    public Response(String status, HashMap<String,Object> data) {
+    public Response(String status, Object data) {
         this.status = status;
         this.data = data;
     }
@@ -25,11 +25,11 @@ public class Response {
         this.status = status;
     }
 
-    public HashMap<String,Object> getData() {
+    public Object getData() {
         return this.data;
     }
 
-    public void setData(HashMap<String,Object> data) {
+    public void setData(Object data) {
         this.data = data;
     }
 
@@ -38,7 +38,7 @@ public class Response {
         return this;
     }
 
-    public Response data(HashMap<String,Object> data) {
+    public Response data(Object data) {
         this.data = data;
         return this;
     }

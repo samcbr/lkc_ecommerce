@@ -4,6 +4,8 @@ import java.util.HashMap;
 
 import com.lkc.lkc.models.Login;
 import com.lkc.lkc.models.Response;
+import com.lkc.lkc.models.UserLkc;
+import com.lkc.lkc.services.AuthenticationService;
 import com.lkc.lkc.services.MyUserDetailService;
 import com.lkc.lkc.utils.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,11 +30,15 @@ public class AuthController {
     @Autowired
     JwtUtil jwtUtil;
 
-    HashMap<String,Object> map=new HashMap<String,Object>();
+    @Autowired
+    AuthenticationService authenticationService;
+
+    
 
     @PostMapping("/login")
     public ResponseEntity<Object> doLogin(@RequestBody Login user) throws Exception
     {
+        HashMap<String,Object> map=new HashMap<String,Object>();
         try{
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(user.getUserName(), user.getPassword()));
         }
@@ -48,5 +54,18 @@ public class AuthController {
         String token=jwtUtil.generateToken(userDetails);
         map.put("authToken", token);
         return ResponseEntity.ok(new Response("success",map));
+    }
+    @PostMapping("/signUp")
+    public ResponseEntity<Object> doSignUp(@RequestBody UserLkc user) throws Exception
+    {
+        HashMap<String,Object> map=new HashMap<String,Object>();
+        boolean status=authenticationService.doSignUp(user);
+        if(status)
+        {
+            map.put("user", user);
+            return ResponseEntity.ok(new Response("success",map));
+        }
+        map.put("message","UserName already exists");
+        return new ResponseEntity<Object>(new Response("fail",map),HttpStatus.BAD_REQUEST);
     }
 }
