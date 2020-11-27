@@ -1,7 +1,8 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:lkc/modules/authenticator/provider/auth_provider.dart';
+import 'package:lkc/models/user.dart';
+import 'package:lkc/modules/authenticator/auth_provider.dart';
 import 'package:provider/provider.dart';
 
 class LoginScreen extends StatelessWidget {
@@ -51,8 +52,9 @@ class LoginScreen extends StatelessWidget {
                       height: 64,
                     ),
                     RaisedButton(
-                      onPressed: () {
-                        authProvider.doLogin("", "");
+                      onPressed: () async {
+                        User user = await authProvider.doLogin("", "");
+                        print(user.authToken);
                       },
                       child: Text(
                         'Login',

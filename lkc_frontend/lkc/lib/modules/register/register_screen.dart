@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:lkc/modules/authenticator/provider/auth_provider.dart';
+import 'package:lkc/modules/authenticator/auth_provider.dart';
 
 class RegisterScreen extends StatelessWidget {
   Function toggle;

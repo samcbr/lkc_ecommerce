@@ -1,15 +1,33 @@
+import 'dart:convert';
+
 class ResponseLKC {
   String status;
   String message;
-  Map<String, dynamic> data;
+  dynamic data;
 
   ResponseLKC({this.data, this.message, this.status});
 
-  factory ResponseLKC.fromJson(Map<String, dynamic> json) {
+ 
+
+  Map<String, dynamic> toMap() {
+    return {
+      'status': status,
+      'message': message,
+      'data': data,
+    };
+  }
+
+  factory ResponseLKC.fromMap(Map<String, dynamic> map) {
+    if (map == null) return null;
+  
     return ResponseLKC(
-      status: json['status'],
-      message: json['message'],
-      data: json['data'],
+      status: map['status'],
+      message: map['message'],
+      data: map['data'],
     );
   }
+
+  String toJson() => json.encode(toMap());
+
+  factory ResponseLKC.fromJson(String source) => ResponseLKC.fromMap(json.decode(source));
 }

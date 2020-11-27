@@ -19,29 +19,32 @@ class AuthProvider extends ChangeNotifier {
   Future<User> doLogin(String userId, String password) async {
     try {
       Response response = await http.post(
-        'https://salty-garden-74113.herokuapp.com/login',
+        'https://fathomless-eyrie-36491.herokuapp.com/login',
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8'
         },
         body: jsonEncode(
-          <String, String>{"userName": "hhh", "password": "hhh"},
+          <String, String>{
+            "userName": "shivamgulati2203@gmail.com",
+            "password": "hhh"
+          },
         ),
       );
-      print(response.body);
+      
       if (response.statusCode == 200) {
-        ResponseLKC responseLKC =
-            ResponseLKC.fromJson(jsonDecode(response.body));
+        ResponseLKC responseLKC = ResponseLKC.fromJson(response.body);
 
         user = User.fromJson(responseLKC.data);
-        print(user.authToken);
+        
         await sharedPreferences.setString('authToken', user.authToken);
         await sharedPreferences.setString('firstName', user.firstName);
         await sharedPreferences.setString('lastName', user.lastName);
         await sharedPreferences.setString('userId', user.userId);
         notifyListeners();
+        return user;
       }
       print(user);
-      return user;
+      return null;
     } catch (e) {
       return null;
     }

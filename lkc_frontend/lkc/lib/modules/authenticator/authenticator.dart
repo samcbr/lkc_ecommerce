@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:lkc/modules/authenticator/provider/auth_provider.dart';
+import 'package:lkc/modules/authenticator/auth_provider.dart';
 import 'package:lkc/modules/home/home_screen.dart';
 import 'package:lkc/modules/login/login_screen.dart';
 import 'package:lkc/modules/register/register_screen.dart';
@@ -22,6 +22,8 @@ class _AuthenticatorState extends State<Authenticator> {
   @override
   Widget build(BuildContext context) {
     final authProvider = Provider.of<AuthProvider>(context);
+    print(authProvider.user);
+    print(AuthProvider.sharedPreferences.getString('authToken'));
     return Scaffold(
       body: AuthProvider.sharedPreferences.getString('authToken') == null
           ? toggle
