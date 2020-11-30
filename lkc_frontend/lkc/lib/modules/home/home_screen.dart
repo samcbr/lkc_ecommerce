@@ -2,12 +2,25 @@ import 'package:after_init/after_init.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_placeholder_textlines/flutter_placeholder_textlines.dart';
+import 'package:lkc/models/adapter.dart';
+import 'package:lkc/models/alarm.dart';
+import 'package:lkc/models/battery.dart';
+import 'package:lkc/models/cable.dart';
+import 'package:lkc/models/door_bell.dart';
 import 'package:lkc/models/extension_board.dart';
+import 'package:lkc/models/immuno_booster.dart';
+import 'package:lkc/models/led.dart';
+import 'package:lkc/models/mask.dart';
+import 'package:lkc/models/multi_plug.dart';
+import 'package:lkc/models/sanitizer.dart';
+import 'package:lkc/models/stand.dart';
 import 'package:lkc/modules/authenticator/auth_provider.dart';
 import 'package:lkc/modules/home/home_provider.dart';
 import 'package:lkc/modules/product_detail/product_detail_screen.dart';
+import 'package:lkc/modules/product_list/product_list_provider.dart';
 import 'package:lkc/modules/product_list/product_list_screen.dart';
 import 'package:provider/provider.dart';
+import 'package:shimmer/shimmer.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -21,6 +34,19 @@ class _HomeScreenState extends State<HomeScreen>
   BannerProvider bannerProvider;
   List<ExtensionBoard> topExtensionBoards;
   List<String> banners;
+
+  ExtensionBoard extensionBoard;
+  Adapter adapter;
+  Alarm alarm;
+  Battery battery;
+  Cable cable;
+  DoorBell doorBell;
+  ImmunoBooster immunoBooster;
+  Led led;
+  Mask mask;
+  MultiPlug multiPlug;
+  Sanitizer sanitizer;
+  Stand stand;
   @override
   void initState() {
     // TODO: implement initState
@@ -109,7 +135,7 @@ class _HomeScreenState extends State<HomeScreen>
                 ),
               ),
             ),
-            topProduct(topExtensionBoards, 'extensionBoards'),
+            getTopExtensionBoards(topExtensionBoards, ExtensionBoard),
           ],
         ),
       ),
@@ -151,20 +177,28 @@ class _HomeScreenState extends State<HomeScreen>
                   enlargeCenterPage: true,
                 ),
               )
-            : Card(
-                child: Container(
-                  height: 150,
-                  width: double.infinity,
-                  child: Center(
-                    child: PlaceholderLines(
-                      count: 4,
-                      align: TextAlign.center,
-                      animate: true,
-                      color: Colors.red[50],
+            : CarouselSlider.builder(
+                itemCount: 3,
+                itemBuilder: (context, index) {
+                  return Shimmer.fromColors(
+                    baseColor: Colors.blue[50],
+                    highlightColor: Colors.white,
+                    child: Card(
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16)),
+                      clipBehavior: Clip.antiAlias,
+                      child: Container(
+                        color: Colors.white,
+                        width: double.infinity,
+                      ),
                     ),
-                  ),
-                ),
-              );
+                  );
+                },
+                options: CarouselOptions(
+                  height: 150,
+                  autoPlay: true,
+                  enlargeCenterPage: true,
+                ));
       },
     );
   }
@@ -176,30 +210,35 @@ class _HomeScreenState extends State<HomeScreen>
       childAspectRatio: 3 / 2,
       shrinkWrap: true,
       children: [
-        menuItem('Masks', 'mask.png', 'masks'),
-        menuItem('Sanitizers', 'sanitizer.png', 'sanitizers'),
-        menuItem('ImmunoBoosters', 'immune.jpg', 'immunoBoosters'),
-        menuItem('Alarms', 'alarm.png', 'alarms'),
-        menuItem('Extension boards', 'extensionboard.png', 'extensionBoards'),
-        menuItem('Batteries', 'ledfan.png', 'batteries'),
-        menuItem('LED Lights', 'led.png', 'leds'),
-        menuItem('Multi Plugs', 'multiplug.png', 'multiplugs'),
-        menuItem('Cables', 'cable.png', 'extensionBoards'),
-        menuItem('Door Bells', 'doorbell.png', 'doorBells'),
-        menuItem('Adapters', 'adapter.png', 'adapters'),
-        menuItem('Stands', 'stand.png', 'stands'),
+        menuItem('Masks', 'mask.png', Mask),
+        menuItem('Sanitizers', 'sanitizer.png', Sanitizer),
+        menuItem('ImmunoBoosters', 'immune.jpg', ImmunoBooster),
+        menuItem('Alarms', 'alarm.png', Alarm),
+        menuItem('Extension boards', 'extensionboard.png', ExtensionBoard),
+        menuItem('Batteries', 'ledfan.png', Battery),
+        menuItem('LED Lights', 'led.png', Led),
+        menuItem('Multi Plugs', 'multiplug.png', MultiPlug),
+        menuItem('Cables', 'cable.png', Cable),
+        menuItem('Door Bells', 'doorbell.png', DoorBell),
+        menuItem('Adapters', 'adapter.png', Adapter),
+        menuItem('Stands', 'stand.png', Stand),
       ],
     );
   }
 
-  Widget menuItem(String title, String icon, String productType) {
+  Widget menuItem(String title, String icon, Type type) {
     //function for creating menu item
     return GestureDetector(
       onTap: () {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => ProductListScreen(productType),
+            builder: (context) {
+              return ChangeNotifierProvider(
+                create: (context) => ProductListProvider(),
+                child: ProductListScreen(type),
+              );
+            },
           ),
         );
       },
@@ -229,13 +268,15 @@ class _HomeScreenState extends State<HomeScreen>
     );
   }
 
-  Widget topItem(item, String type) {
+  Widget topItem(item, Type type) {
     return GestureDetector(
+      
       onTap: () {
+        
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => ProductDetailScreen(type, item.id),
+            builder: (context) => ProductDetailScreen(type,item),
           ),
         );
       },
@@ -278,7 +319,7 @@ class _HomeScreenState extends State<HomeScreen>
     );
   }
 
-  Widget topProduct(List<dynamic> products, String type) {
+  Widget getTopExtensionBoards(List<ExtensionBoard> products, Type type) {
     return homeProvider.extensionBoardState == NotifierState.loaded
         ? GridView.count(
             shrinkWrap: true,

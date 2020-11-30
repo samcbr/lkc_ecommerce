@@ -11,7 +11,7 @@ class ApiBaseHelper {
   static SharedPreferences sharedPreference;
   static const String BASE_URL="https://fathomless-eyrie-36491.herokuapp.com";
   static init() async {
-    sharedPreference = await SharedPreferences.getInstance();
+       sharedPreference = await SharedPreferences.getInstance();
   }
 
   HttpClientWithInterceptor client =
