@@ -2,12 +2,17 @@ package com.lkc.lkc.models;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.TypeAlias;
+import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 
+@Document(collection = "userLkc")
+@TypeAlias("user")
 public class UserLkc {
 
     private String userName;
@@ -16,13 +21,35 @@ public class UserLkc {
 
     private String password;
     private String phoneNumber;
+    private List<Product> cart;
+    private String address;
 
-    public UserLkc(String email, String password,String userName,String phoneNumber) {
+    public UserLkc(String email, String password, String userName, String phoneNumber) {
         // TODO Auto-generated constructor stub
-        this.userName=userName;
-        this.email=email;
-        this.password=password;
-        this.phoneNumber=phoneNumber;
+        this.userName = userName;
+        this.email = email;
+        this.password = password;
+        this.phoneNumber = phoneNumber;
+        address="";
+        cart=new ArrayList<Product>();
+    }
+
+
+
+    public List<Product> getCart() {
+        return this.cart;
+    }
+
+    public void setCart(List<Product> cart) {
+        this.cart = cart;
+    }
+
+    public String getAddress() {
+        return this.address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
     }
 
     public String getUserName() {
@@ -49,7 +76,6 @@ public class UserLkc {
         this.phoneNumber = phoneNumber;
     }
 
-
     public String getPassword() {
         return this.password;
     }
@@ -62,5 +88,5 @@ public class UserLkc {
      *
      */
     private static final long serialVersionUID = -8037798663593625823L;
-    
+
 }

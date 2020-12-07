@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 
 import com.lkc.lkc.models.Banner;
 import com.lkc.lkc.models.ExtensionBoard;
+import com.lkc.lkc.models.MultiPlug;
 import com.lkc.lkc.models.Response;
 import com.lkc.lkc.services.ProductService;
 
@@ -26,32 +27,42 @@ public class ProductController {
     @GetMapping("/extensionBoards")
     public ResponseEntity<Object> getProducts() {
         List<ExtensionBoard> list = productService.getExtensionBoards();
-        return new ResponseEntity<Object>(new Response("success",list),HttpStatus.OK);
+        return new ResponseEntity<Object>(new Response("success", list), HttpStatus.OK);
     }
 
     @PostMapping("/extensionBoards/bulk")
-    public ResponseEntity<Object> addExtensionBoardsInBulk(@RequestBody List<ExtensionBoard> list)
-    {
+    public ResponseEntity<Object> addExtensionBoardsInBulk(@RequestBody List<ExtensionBoard> list) {
         productService.addExtensionBoardsInBulk(list);
-        return ResponseEntity.ok(new Response("success",null));
+        return ResponseEntity.ok(new Response("success", null));
+    }
+
+    @PostMapping("/extensionBoards")
+    public ResponseEntity<Object> addExtensionBoard(@RequestBody ExtensionBoard extensionBoard) {
+        productService.addExtensionBoard(extensionBoard);
+        return ResponseEntity.ok(new Response("success", null));
+    }
+
+    @PostMapping("/multiPlugs/bulk")
+    public ResponseEntity<Object> addMultiPlugsInBulk(@RequestBody List<MultiPlug> list) {
+        productService.addMultiPlugsInBulk(list);
+        return ResponseEntity.ok(new Response("success", null));
     }
 
     @GetMapping("/banners")
-    public ResponseEntity<Object> getBanners(){
-        List<String> list = productService.getBanners().stream().map((item)->item.url).collect(Collectors.toList());
-        return ResponseEntity.ok(new Response("success",list));
+    public ResponseEntity<Object> getBanners() {
+        List<String> list = productService.getBanners().stream().map((item) -> item.url).collect(Collectors.toList());
+        return ResponseEntity.ok(new Response("success", list));
     }
 
     @PostMapping("/banners")
-    public ResponseEntity<Object> addBanners(@RequestBody List<String> list)
-    {
-        if(list.isEmpty())
-        {
-            return new ResponseEntity<Object>(new Response("fail","No banners provided in the list"),HttpStatus.BAD_REQUEST);
+    public ResponseEntity<Object> addBanners(@RequestBody List<String> list) {
+        if (list.isEmpty()) {
+            return new ResponseEntity<Object>(new Response("fail", "No banners provided in the list"),
+                    HttpStatus.BAD_REQUEST);
         }
-        List<Banner> banners=list.stream().map((item)->new Banner(item)).collect(Collectors.toList());
+        List<Banner> banners = list.stream().map((item) -> new Banner(item)).collect(Collectors.toList());
         productService.addBanners(banners);
-        return ResponseEntity.ok(new Response("success",null));
+        return ResponseEntity.ok(new Response("success", null));
     }
 
 }

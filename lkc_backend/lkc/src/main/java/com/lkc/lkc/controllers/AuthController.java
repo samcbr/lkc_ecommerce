@@ -14,8 +14,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -40,7 +42,7 @@ public class AuthController {
     {
         HashMap<String,Object> map=new HashMap<String,Object>();
         try{
-            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(user.getUserName(), user.getPassword()));
+            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(user.getEmail(), user.getPassword()));
         }
         catch(Exception e)
         {
@@ -49,7 +51,7 @@ public class AuthController {
             return new ResponseEntity<Object>(new Response("fail",map), HttpStatus.BAD_REQUEST);
         }
 
-        final UserDetails userDetails=userDetailService.loadUserByUsername(user.getUserName());
+        final UserDetails userDetails=userDetailService.loadUserByUsername(user.getEmail());
 
         String token=jwtUtil.generateToken(userDetails);
         map.put("authToken", token);
@@ -67,5 +69,23 @@ public class AuthController {
         }
         map.put("message","UserName already exists");
         return new ResponseEntity<Object>(new Response("fail",map),HttpStatus.BAD_REQUEST);
+    }
+
+    @GetMapping("/userDetails")
+    public ResponseEntity<Object> getUserDetails(@RequestHeader("Authorization") String token)
+    {
+        HashMap<String,Object> map=new HashMap<String,Object>();
+        String id=jwtUtil.extractUsername(token);
+        UserLkc user=authenticationService.getUserDetails(id);
+        if(user==null)
+        {
+            map.put("message","Email ID is not registered");
+            return new ResponseEntity<Object>(new Response("fail",map),HttpStatus.BAD_REQUEST);
+        }
+        else
+        {
+            map.put("user", user);
+            return ResponseEntity.ok(new Response("success",user));
+        }
     }
 }

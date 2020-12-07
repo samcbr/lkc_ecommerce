@@ -1,15 +1,15 @@
 package com.lkc.lkc.models;
 
 public class Login {
-    private String userName;
+    private String email;
     private String password;
 
-    public String getUserName() {
-        return this.userName;
+    public String getEmail() {
+        return this.email;
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
+    public void setUserName(String email) {
+        this.email = email;
     }
 
     public String getPassword() {
@@ -20,8 +20,8 @@ public class Login {
         this.password = password;
     }
 
-    public Login(String userName, String password) {
-        this.userName = userName;
+    public Login(String email, String password) {
+        this.email = email;
         this.password = password;
     }
 
